@@ -1,0 +1,21 @@
+import Template{{hu3s_ucname}} from "../../application/use_cases/{{hu3s_lc_ucname}}/Template{{hu3s_ucname}}";
+import { {{hu3s_ucname}} } from "../../domain/entities/{{hu3s_ucname}}";
+
+export default class {{hu3s_ucname}}Controller {
+  private readonly template{{hu3s_ucname}}UC: Template{{hu3s_ucname}}
+  constructor(
+    template{{hu3s_ucname}}: Template{{hu3s_ucname}}
+  ) {
+    this.template{{hu3s_ucname}}UC = template{{hu3s_ucname}};
+  }
+
+  /** template list use case */
+  public async templateGetList(
+    storeId: string
+  ): Promise<{{hu3s_ucname}}[]> {
+    var self = this;
+    /** call use case to excute template */
+    return self.template{{hu3s_ucname}}UC.execute(storeId);
+  }
+  /**More User case */
+}

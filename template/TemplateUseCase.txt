@@ -1,0 +1,25 @@
+/**
+ * This is template use case define. Only copy and edit for more use case of {{hu3s_ucname}}
+ */
+
+import { {{hu3s_ucname}} } from '../../../domain/entities/{{hu3s_ucname}}';
+import { I{{hu3s_ucname}}Repository } from '../../repositories/I{{hu3s_ucname}}Repository';
+
+export default class Template{{hu3s_ucname}} {
+
+    private readonly {{hu3s_lc1_ucname}}Repository: I{{hu3s_ucname}}Repository
+
+    constructor(
+        {{hu3s_lc1_ucname}}Repository: I{{hu3s_ucname}}Repository
+    ) {
+        this.{{hu3s_lc1_ucname}}Repository = {{hu3s_lc1_ucname}}Repository
+    }
+
+    public async execute(storeId: string): Promise<{{hu3s_ucname}}[]> {
+        /**Only call repo for test case */
+        return this.{{hu3s_lc1_ucname}}Repository.templateFunction(storeId);
+    }
+}
+
+
+

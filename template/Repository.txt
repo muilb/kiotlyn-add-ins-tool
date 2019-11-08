@@ -1,0 +1,25 @@
+import { isEmpty } from 'lodash';
+import { CbBaseRepository } from '../../../../interfaces/repositories/CbBaseRepository';
+import { I{{hu3s_ucname}}Repository } from '../../application/repositories/I{{hu3s_ucname}}Repository';
+import { {{hu3s_ucname}} } from '../../domain/entities/{{hu3s_ucname}}';
+
+
+export default class {{hu3s_ucname}}Repository extends CbBaseRepository implements I{{hu3s_ucname}}Repository {
+  public async templateFunction(
+    storeId: string
+  ): Promise<{{hu3s_ucname}}[]> {
+    var self = this;
+    if (isEmpty(storeId)) {
+      return [];
+    }
+    /** return list of {{hu3s_ucname}} has storeId is 
+     * use this.cb Object to query
+     *       
+    */
+    /** On this tmp, its only return list empty object */
+    let {{hu3s_lc1_ucname}}Empty = new {{hu3s_ucname}}({
+      templateString: 'empty object'
+    });
+    return [{{hu3s_lc1_ucname}}Empty];
+  }
+}

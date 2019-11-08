@@ -1,0 +1,5 @@
+
+import { BaseModel } from '../../../../domain/entities/BaseModel';
+export class {{hu3s_ucname}} extends BaseModel {
+    public templateString: string
+}

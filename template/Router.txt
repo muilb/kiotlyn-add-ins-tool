@@ -1,0 +1,20 @@
+// tslint:disable: no-unsafe-any
+import { Request, Response, Router } from 'express';
+import { resolve } from '../../../../../../domain/container/Container';
+// import { authorizeUser } from '../../../../../../infrastructure/webserver/middlewares/AuthMiddleware';
+// import { storeIdParam } from '../../../../../../infrastructure/webserver/routers/merchant/StoreIdParam';
+import {{hu3s_ucname}}Controller from '../../../../interfaces/controllers/{{hu3s_ucname}}Controller';
+// tslint:disable-next-line: export-name
+export const router = Router();
+/** storeIdParam if need */
+// router.param('storeid', storeIdParam);
+
+router.get('/{{hu3s_lc_ucname}}/:storeid',
+    // add authorize if need
+    // authorizeUser(['merchant', 'employee']),
+    async (request: Request, response: Response) => {
+        const {{hu3s_lc1_ucname}}Controller = resolve<{{hu3s_ucname}}Controller>('{{hu3s_lc1_ucname}}Controller');
+        const { storeid, moreparams } = request.params;
+        response.sendPromise({{hu3s_lc1_ucname}}Controller.templateGetList('testId'));
+    }
+)
