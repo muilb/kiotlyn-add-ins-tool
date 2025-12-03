@@ -11,3 +11,6 @@
 ```npm start <user case name> <full path to kiolyn lib>```
 Exam: npm start WaitList /home/admin2s/3SI/Project/test-github/kiolyn/app/lib
 Now routting it to Router and get hello api. Code havefun!
+
+# Domain CRUD for Spring
+Please use domain CRUD Generator Tool Folder

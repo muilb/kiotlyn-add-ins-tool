@@ -1,0 +1,120 @@
+package {{basePackage}}.{{entityNameLower}}.controller;
+
+import {{basePackage}}.{{entityNameLower}}.dto.{{entityName}}Dto;
+import {{basePackage}}.{{entityNameLower}}.service.{{entityName}}Service;
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * REST controller for managing {{entityName}} resources.
+ * <p>
+ * Provides CRUD operations for {{entityName}}Dto. The base path
+ * for all endpoints is <code>/api/v1/{{entityNameLower}}</code>.
+ * </p>
+ */
+@RestController
+@RequestMapping("/api/v1/{{entityNameLower}}")
+public class {{entityName}}Controller {
+
+  private final {{entityName}}Service service;
+
+  /**
+   * Constructs a {{entityName}}Controller with the given service.
+   *
+   * @param service the {{entityName}}Service used to handle business logic for {{entityName}} entities
+   */
+  public {{entityName}}Controller({{entityName}}Service service) {
+    this.service = service;
+  }
+
+  /**
+   * Creates a new {{entityName}}.
+   *
+   * @param dto the {{entityName}}Dto to create
+   * @return the created {{entityName}}Dto with HTTP 201 status
+   */
+  @PostMapping
+  public ResponseEntity<{{entityName}}Dto> create(@Valid @RequestBody {{entityName}}Dto dto) {
+    {{entityName}}Dto created = service.create(dto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(created);
+  }
+
+  /**
+   * Updates an existing {{entityName}}.
+   *
+   * @param id the ID of the {{entityName}} to update
+   * @param dto the {{entityName}}Dto with updated data
+   * @return the updated {{entityName}}Dto
+   */
+  @PutMapping("/{id}")
+  public ResponseEntity<{{entityName}}Dto> update(@PathVariable Long id, @Valid @RequestBody {{entityName}}Dto dto) {
+    {{entityName}}Dto updated = service.update(id, dto);
+    return ResponseEntity.ok(updated);
+  }
+
+  /**
+   * Retrieves a {{entityName}} by ID.
+   *
+   * @param id the ID of the {{entityName}}
+   * @return the {{entityName}}Dto if found, or HTTP 404 if not found
+   */
+  @GetMapping("/{id}")
+  public ResponseEntity<{{entityName}}Dto> findById(@PathVariable Long id) {
+    return service.findById(id)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
+  }
+
+  /**
+   * Retrieves all {{entityName}} entities.
+   *
+   * @return list of all {{entityName}}Dto
+   */
+  @GetMapping
+  public ResponseEntity<List<{{entityName}}Dto>> findAll() {
+    List<{{entityName}}Dto> list = service.findAll();
+    return ResponseEntity.ok(list);
+  }
+
+  /**
+   * Retrieves all {{entityName}} entities with pagination.
+   *
+   * @param pageable the pagination information
+   * @return page of {{entityName}}Dto
+   */
+  @GetMapping("/page")
+  public ResponseEntity<Page<{{entityName}}Dto>> findAll(Pageable pageable) {
+    Page<{{entityName}}Dto> page = service.findAll(pageable);
+    return ResponseEntity.ok(page);
+  }
+
+  /**
+   * Deletes a {{entityName}} by ID.
+   *
+   * @param id the ID of the {{entityName}} to delete
+   * @return HTTP 204 No Content
+   */
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    service.deleteById(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Checks if a {{entityName}} exists by ID.
+   *
+   * @param id the ID to check
+   * @return true if exists, false otherwise
+   */
+  @GetMapping("/exists/{id}")
+  public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
+    boolean exists = service.existsById(id);
+    return ResponseEntity.ok(exists);
+  }
+}

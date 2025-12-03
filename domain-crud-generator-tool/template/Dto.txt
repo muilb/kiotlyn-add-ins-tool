@@ -1,0 +1,84 @@
+package {{basePackage}}.{{entityNameLower}}.dto;
+
+import {{basePackage}}.{{entityNameLower}}.entity.{{entityName}};
+import jp.brycen.common.enums.EntityStatus;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+/**
+ * Data Transfer Object (DTO) representing a {{entityName}} entity.
+ * <p>
+ * Includes validation constraints for name, code, and description fields.
+ * Provides methods to convert between entity and DTO.
+ * </p>
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class {{entityName}}Dto {
+
+  private Long id;
+
+  @NotBlank(message = "NAME_REQUIRED")
+  @Size(max = 25, message = "Name must not exceed 25 characters")
+  private String name;
+
+  @NotBlank(message = "CODE_REQUIRED")
+  @Size(max = 10, message = "Code must not exceed 10 characters")
+  private String code;
+
+  @Size(min = 10, max = 100, message = "Description must be between 10 and 100 characters")
+  private String description;
+
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
+  private EntityStatus status;
+  private LocalDateTime deletedAt;
+
+  /**
+   * Converts this DTO to a {{entityName}} entity.
+   *
+   * @return the {{entityName}} entity
+   */
+  public {{entityName}} toEntity() {
+    {{entityName}} entity = new {{entityName}}();
+    entity.setId(this.id);
+    entity.setName(this.name);
+    entity.setCode(this.code);
+    entity.setDescription(this.description);
+    entity.setCreatedAt(this.createdAt);
+    entity.setUpdatedAt(this.updatedAt);
+    entity.setStatus(this.status);
+    entity.setDeletedAt(this.deletedAt);
+    return entity;
+  }
+
+  /**
+   * Creates a DTO from a {{entityName}} entity.
+   *
+   * @param entity the {{entityName}} entity
+   * @return the {{entityName}}Dto
+   */
+  public static {{entityName}}Dto fromEntity({{entityName}} entity) {
+    if (entity == null) {
+      return null;
+    }
+    return {{entityName}}Dto.builder()
+        .id(entity.getId())
+        .name(entity.getName())
+        .code(entity.getCode())
+        .description(entity.getDescription())
+        .createdAt(entity.getCreatedAt())
+        .updatedAt(entity.getUpdatedAt())
+        .status(entity.getStatus())
+        .deletedAt(entity.getDeletedAt())
+        .build();
+  }
+}
