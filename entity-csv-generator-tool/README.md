@@ -116,6 +116,7 @@ The tool automatically maps SQL datatypes to Java types:
 | SQL Type | Java Type |
 |----------|-----------|
 | VARCHAR, CHAR, TEXT, NVARCHAR | String |
+| TINYINT | int |
 | INT, INTEGER, SMALLINT | Integer |
 | BIGINT, LONG | Long |
 | DECIMAL, NUMERIC, NUMBER | BigDecimal |

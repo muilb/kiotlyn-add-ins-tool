@@ -1,0 +1,26 @@
+Mã văn bản;ACV_TXT_CODE;VARCHAR(50);Yes
+Tên văn bản;ACV_TXT_NAME;VARCHAR(255);Yes
+Ký tự đơn;SINGLE_CHAR;CHAR(1);
+Văn bản dài;LONG_TEXT;TEXT;
+Văn bản Unicode;UNICODE_NAME;NVARCHAR(100);
+Giá trị nhỏ;TINY_VALUE;TINYINT;Yes
+Số nguyên;COUNT_VALUE;INT;
+Số nguyên nhỏ;SMALL_NUMBER;SMALLINT;
+Số nguyên lớn;BIG_NUMBER;BIGINT;Yes
+Số thực;DECIMAL_VALUE;DECIMAL(18,2);Yes
+Số thực chính xác;NUMERIC_VALUE;NUMERIC(10,4);
+Số đơn;NUMBER_FIELD;NUMBER;
+Ngày sinh;BIRTH_DATE;DATE;
+Ngày tạo;CREATED_DATE;TIMESTAMP;Yes
+Ngày cập nhật;UPDATED_AT;DATETIME;
+Giờ làm việc;WORK_TIME;TIME;
+Trạng thái kích hoạt;IS_ACTIVE;BOOLEAN;
+Đã xóa;IS_DELETED;BOOL;
+Bit cờ;FLAG_BIT;BIT;
+Số thực đơn;FLOAT_VALUE;FLOAT;
+Số thực kép;DOUBLE_VALUE;DOUBLE;
+Tỷ lệ thực;RATE_REAL;REAL;
+Dữ liệu nhị phân;BINARY_DATA;BLOB;
+File nhị phân;FILE_CONTENT;BINARY;
+Người tạo ID;CREATED_BY_ID;BIGINT;Yes(PK)
+Mô tả chi tiết;DESCRIPTION;TEXT;

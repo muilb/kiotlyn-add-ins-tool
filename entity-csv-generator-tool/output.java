@@ -1,5 +1,5 @@
 // Generated Entity Fields
-// Date: 2025-12-12T02:58:11.824Z
+// Date: 2025-12-12T04:30:22.940Z
 
 // Required imports:
 // import jakarta.persistence.Column;

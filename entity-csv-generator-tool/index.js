@@ -47,6 +47,8 @@ function mapDataType(sqlType) {
   
   if (type.startsWith('VARCHAR') || type.startsWith('CHAR') || type.startsWith('TEXT') || type.startsWith('NVARCHAR')) {
     return 'String';
+  } else if (type === 'TINYINT') {
+    return 'int';
   } else if (type === 'INT' || type === 'INTEGER' || type === 'SMALLINT') {
     return 'Integer';
   } else if (type === 'BIGINT' || type === 'LONG') {
