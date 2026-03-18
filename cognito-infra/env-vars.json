@@ -1,0 +1,6 @@
+{
+  "Variables": {
+    "ENVIRONMENT": "dev",
+    "USER_POOL_CONFIGS": "{\"us-west-2_ClientPool\":{\"reset_path\":\"https://ihp.brycen.com.vn/reset-password\",\"login_path\":\"https://ihp.brycen.com.vn/login\",\"app_name\":\"IHP Application\"},\"us-west-2_VendorPool\":{\"reset_path\":\"https://ihp.brycen.com.vn/reset-password\",\"login_path\":\"https://ihp.brycen.com.vn/login\",\"app_name\":\"IHP Application\"},\"us-west-2_OperatorPool\":{\"reset_path\":\"https://ihp.brycen.com.vn/reset-password\",\"login_path\":\"https://ihp.brycen.com.vn/login\",\"app_name\":\"IHP Application\"}}"
+  }
+}

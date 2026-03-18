@@ -1,0 +1,108 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Cognito Custom Message Lambda Function
+
+# ──────────────────────────────────────────────────────────
+# Parameters
+# ──────────────────────────────────────────────────────────
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, stg, prod]
+    Description: Deployment environment
+
+  UserPoolConfigsJson:
+    Type: String
+    Description: >
+      JSON map of Cognito User Pool ID -> {reset_path, app_name}.
+      Example: {"us-west-2_poolA": {"reset_path": "https://example.com/reset", "app_name": "MyApp"}}
+    NoEcho: false
+
+# ──────────────────────────────────────────────────────────
+# Globals
+# ──────────────────────────────────────────────────────────
+Globals:
+  Function:
+    Runtime: python3.12
+    Timeout: 10
+    MemorySize: 128
+    Environment:
+      Variables:
+        ENVIRONMENT: !Ref Environment
+        USER_POOL_CONFIGS: !Ref UserPoolConfigsJson
+
+# ──────────────────────────────────────────────────────────
+# Resources
+# ──────────────────────────────────────────────────────────
+Resources:
+
+  # ── IAM Role ──────────────────────────────────────────
+  CognitoCustomMessageFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "cognito-custom-message-role-${Environment}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: CloudWatchLogsPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/cognito-custom-message-${Environment}:*"
+
+  # ── Lambda Function ───────────────────────────────────
+  CognitoCustomMessageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "cognito-custom-message-${Environment}"
+      CodeUri: lambda/custom_message/
+      Handler: app.lambda_handler
+      Role: !GetAtt CognitoCustomMessageFunctionRole.Arn
+      Description: "Cognito Custom Message trigger – customises ForgotPassword and SignUp emails"
+      Tags:
+        Environment: !Ref Environment
+        Project: cognito-infra
+
+  # ── Lambda permission – allow Cognito to invoke ───────
+  # NOTE: This permission is added per User Pool.
+  #       If you have multiple pools, duplicate this resource with different logical IDs.
+  CognitoInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt CognitoCustomMessageFunction.Arn
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      # SourceArn: !Sub "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/<YOUR_USER_POOL_ID>"
+
+  # ── CloudWatch Log Group (explicit, with retention) ───
+  CognitoCustomMessageLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/cognito-custom-message-${Environment}"
+      RetentionInDays: 30
+
+# ──────────────────────────────────────────────────────────
+# Outputs
+# ──────────────────────────────────────────────────────────
+Outputs:
+  FunctionArn:
+    Description: ARN of the CognitoCustomMessage Lambda function
+    Value: !GetAtt CognitoCustomMessageFunction.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-FunctionArn"
+
+  FunctionName:
+    Description: Name of the Lambda function
+    Value: !Ref CognitoCustomMessageFunction

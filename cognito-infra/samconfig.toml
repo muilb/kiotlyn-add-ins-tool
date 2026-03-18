@@ -1,0 +1,40 @@
+# SAM CLI configuration file
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-config.html
+
+version = 0.1
+
+# ── dev ───────────────────────────────────────────────────
+[dev.deploy.parameters]
+stack_name          = "cognito-custom-message-dev"
+region              = "us-west-2"
+capabilities        = "CAPABILITY_NAMED_IAM"
+confirm_changeset   = true
+resolve_s3          = true
+parameter_overrides = [
+  "Environment=dev",
+  "UserPoolConfigsJson={\"us-west-2_ClientPool\":{\"reset_path\":\"https://ihp.brycen.com.vn/reset-password\",\"login_path\":\"https://ihp.brycen.com.vn/login\",\"app_name\":\"IHP Application\"},\"us-west-2_VendorPool\":{\"reset_path\":\"https://ihp.brycen.com.vn/reset-password\",\"login_path\":\"https://ihp.brycen.com.vn/login\",\"app_name\":\"IHP Application\"},\"us-west-2_OperatorPool\":{\"reset_path\":\"https://ihp.brycen.com.vn/reset-password\",\"login_path\":\"https://ihp.brycen.com.vn/login\",\"app_name\":\"IHP Application\"}}"
+]
+
+# ── stg ───────────────────────────────────────────────────
+[stg.deploy.parameters]
+stack_name          = "cognito-custom-message-stg"
+region              = "us-west-2"
+capabilities        = "CAPABILITY_NAMED_IAM"
+confirm_changeset   = true
+resolve_s3          = true
+parameter_overrides = [
+  "Environment=stg",
+  "UserPoolConfigsJson={\"us-west-2_ClientPool\":{\"reset_path\":\"https://ihp.brycen.com.vn/reset-password\",\"login_path\":\"https://ihp.brycen.com.vn/login\",\"app_name\":\"IHP Application\"},\"us-west-2_VendorPool\":{\"reset_path\":\"https://ihp.brycen.com.vn/reset-password\",\"login_path\":\"https://ihp.brycen.com.vn/login\",\"app_name\":\"IHP Application\"},\"us-west-2_OperatorPool\":{\"reset_path\":\"https://ihp.brycen.com.vn/reset-password\",\"login_path\":\"https://ihp.brycen.com.vn/login\",\"app_name\":\"IHP Application\"}}"
+]
+
+# ── prod ──────────────────────────────────────────────────
+[prod.deploy.parameters]
+stack_name          = "cognito-custom-message-prod"
+region              = "us-west-2"
+capabilities        = "CAPABILITY_NAMED_IAM"
+confirm_changeset   = true
+resolve_s3          = true
+parameter_overrides = [
+  "Environment=prod",
+  "UserPoolConfigsJson={\"us-west-2_ClientPool\":{\"reset_path\":\"https://ihp.brycen.com.vn/reset-password\",\"login_path\":\"https://ihp.brycen.com.vn/login\",\"app_name\":\"IHP Application\"},\"us-west-2_VendorPool\":{\"reset_path\":\"https://ihp.brycen.com.vn/reset-password\",\"login_path\":\"https://ihp.brycen.com.vn/login\",\"app_name\":\"IHP Application\"},\"us-west-2_OperatorPool\":{\"reset_path\":\"https://ihp.brycen.com.vn/reset-password\",\"login_path\":\"https://ihp.brycen.com.vn/login\",\"app_name\":\"IHP Application\"}}"
+]

@@ -1,0 +1,91 @@
+package {{basePackage}}.{{entityNameLower}}.service.implementation;
+
+import {{basePackage}}.{{entityNameLower}}.dto.{{entityName}}Dto;
+import {{basePackage}}.{{entityNameLower}}.entity.{{entityName}};
+import {{basePackage}}.{{entityNameLower}}.repository.{{entityName}}Repository;
+import {{basePackage}}.{{entityNameLower}}.service.{{entityName}}Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+/**
+ * Service implementation class for managing {{entityName}} entities.
+ * <p>
+ * Implements {{entityName}}Service to provide CRUD operations and business logic for {{entityName}}Dto.
+ * </p>
+ */
+@Service
+@Validated
+@Transactional
+public class {{entityName}}ServiceImpl implements {{entityName}}Service {
+
+  private final {{entityName}}Repository repository;
+
+  /**
+   * Constructs a {{entityName}}ServiceImpl with the given repository.
+   *
+   * @param repository the {{entityName}}Repository for database access
+   */
+  public {{entityName}}ServiceImpl({{entityName}}Repository repository) {
+    this.repository = repository;
+  }
+
+  @Override
+  public {{entityName}}Dto create({{entityName}}Dto dto) {
+    {{entityName}} entity = dto.toEntity();
+    {{entityName}} saved = repository.save(entity);
+    return {{entityName}}Dto.fromEntity(saved);
+  }
+
+  @Override
+  public {{entityName}}Dto update(Long id, {{entityName}}Dto dto) {
+    {{entityName}} entity = repository.findById(id)
+        .orElseThrow(() -> new RuntimeException("{{entityName}} not found with id: " + id));
+    
+    entity.setName(dto.getName());
+    entity.setCode(dto.getCode());
+    entity.setDescription(dto.getDescription());
+    
+    {{entityName}} updated = repository.save(entity);
+    return {{entityName}}Dto.fromEntity(updated);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public Optional<{{entityName}}Dto> findById(Long id) {
+    return repository.findById(id)
+        .map({{entityName}}Dto::fromEntity);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<{{entityName}}Dto> findAll() {
+    return repository.findAll().stream()
+        .map({{entityName}}Dto::fromEntity)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public Page<{{entityName}}Dto> findAll(Pageable pageable) {
+    return repository.findAll(pageable)
+        .map({{entityName}}Dto::fromEntity);
+  }
+
+  @Override
+  public void deleteById(Long id) {
+    repository.deleteById(id);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public boolean existsById(Long id) {
+    return repository.existsById(id);
+  }
+}

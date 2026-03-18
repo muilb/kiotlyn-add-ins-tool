@@ -1,0 +1,16 @@
+package {{basePackage}}.{{entityNameLower}}.repository;
+
+import jp.brycen.common.repository.GenericRepository;
+import {{basePackage}}.{{entityNameLower}}.entity.{{entityName}};
+import org.springframework.stereotype.Repository;
+
+/**
+ * Repository interface for {{entityName}} entity.
+ * <p>
+ * Extends GenericRepository to provide CRUD operations and database access for {{entityName}}
+ * entities.
+ * </p>
+ */
+@Repository
+public interface {{entityName}}Repository extends GenericRepository<{{entityName}}, Long> {
+}

@@ -1,0 +1,73 @@
+package {{basePackage}}.{{entityNameLower}}.service;
+
+import {{basePackage}}.{{entityNameLower}}.dto.{{entityName}}Dto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Service interface for managing {{entityName}} entities.
+ * <p>
+ * Defines CRUD operations and business logic for {{entityName}}Dto.
+ * </p>
+ */
+public interface {{entityName}}Service {
+
+  /**
+   * Creates a new {{entityName}} entity.
+   *
+   * @param dto the {{entityName}}Dto containing data for the new entity
+   * @return the created {{entityName}}Dto
+   */
+  {{entityName}}Dto create({{entityName}}Dto dto);
+
+  /**
+   * Updates an existing {{entityName}} entity.
+   *
+   * @param id the ID of the entity to update
+   * @param dto the {{entityName}}Dto containing updated data
+   * @return the updated {{entityName}}Dto
+   */
+  {{entityName}}Dto update(Long id, {{entityName}}Dto dto);
+
+  /**
+   * Finds a {{entityName}} entity by ID.
+   *
+   * @param id the ID of the entity
+   * @return Optional containing the {{entityName}}Dto if found
+   */
+  Optional<{{entityName}}Dto> findById(Long id);
+
+  /**
+   * Finds all {{entityName}} entities.
+   *
+   * @return list of all {{entityName}}Dto
+   */
+  List<{{entityName}}Dto> findAll();
+
+  /**
+   * Finds all {{entityName}} entities with pagination.
+   *
+   * @param pageable the pagination information
+   * @return page of {{entityName}}Dto
+   */
+  Page<{{entityName}}Dto> findAll(Pageable pageable);
+
+  /**
+   * Deletes a {{entityName}} entity by ID.
+   *
+   * @param id the ID of the entity to delete
+   */
+  void deleteById(Long id);
+
+  /**
+   * Checks if a {{entityName}} entity exists by ID.
+   *
+   * @param id the ID to check
+   * @return true if exists, false otherwise
+   */
+  boolean existsById(Long id);
+}
+

@@ -1,0 +1,21 @@
+{
+  "name": "domain-crud-generator-tool",
+  "version": "1.0.0",
+  "description": "Tool for generating Spring Boot CRUD domain structure with Entity, Repository, Service, Controller, and DTO using only Lombok without MapStruct dependency",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "spring-boot",
+    "crud",
+    "generator",
+    "domain",
+    "lombok"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "handlebars": "^4.7.8"
+  }
+}

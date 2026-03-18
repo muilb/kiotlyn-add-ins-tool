@@ -1,0 +1,410 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Cognito User Pools (Client / Vendor / Operator) with 12 custom attributes
+  + Custom Message Lambda trigger - all-in-one stack.
+  After deploy, run attach_lambda_triggers.ps1 to attach Lambda triggers to each pool.
+
+# ----------------------------------------------------------
+# Parameters
+# ----------------------------------------------------------
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues: [dev, stg, prod]
+
+  ClientAppName:
+    Type: String
+    Default: "IHP Client"
+
+  ClientResetPasswordPath:
+    Type: String
+    Default: "https://ihp.brycen.com.vn/reset-password"
+
+  ClientLoginPath:
+    Type: String
+    Default: "https://ihp.brycen.com.vn/login"
+
+  VendorAppName:
+    Type: String
+    Default: "IHP Vendor"
+
+  VendorResetPasswordPath:
+    Type: String
+    Default: "https://ihp.brycen.com.vn/reset-password"
+
+  VendorLoginPath:
+    Type: String
+    Default: "https://ihp.brycen.com.vn/login"
+
+  OperatorAppName:
+    Type: String
+    Default: "IHP Operator"
+
+  OperatorResetPasswordPath:
+    Type: String
+    Default: "https://ihp.brycen.com.vn/reset-password"
+
+  OperatorLoginPath:
+    Type: String
+    Default: "https://ihp.brycen.com.vn/login"
+
+# ----------------------------------------------------------
+# Globals
+# ----------------------------------------------------------
+Globals:
+  Function:
+    Runtime: python3.12
+    Timeout: 10
+    MemorySize: 128
+
+# ----------------------------------------------------------
+# Resources
+# ----------------------------------------------------------
+Resources:
+
+  # --- IAM Role ---
+  CognitoCustomMessageFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "cognito-custom-message-role-${Environment}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: CognitoDescribeUserPool
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: cognito-idp:DescribeUserPool
+                Resource: !Sub "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*"
+
+  # --- Lambda Function ---
+  CognitoCustomMessageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "cognito-custom-message-${Environment}"
+      CodeUri: ../lambda/custom_message/
+      Handler: app.lambda_handler
+      Role: !GetAtt CognitoCustomMessageFunctionRole.Arn
+      Description: "Cognito Custom Message trigger - customises ForgotPassword and SignUp emails"
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+          CLIENT_APP_NAME: !Ref ClientAppName
+          CLIENT_RESET_PASSWORD_PATH: !Ref ClientResetPasswordPath
+          CLIENT_LOGIN_PATH: !Ref ClientLoginPath
+          VENDOR_APP_NAME: !Ref VendorAppName
+          VENDOR_RESET_PASSWORD_PATH: !Ref VendorResetPasswordPath
+          VENDOR_LOGIN_PATH: !Ref VendorLoginPath
+          OPERATOR_APP_NAME: !Ref OperatorAppName
+          OPERATOR_RESET_PASSWORD_PATH: !Ref OperatorResetPasswordPath
+          OPERATOR_LOGIN_PATH: !Ref OperatorLoginPath
+      Tags:
+        Environment: !Ref Environment
+        Project: cognito-infra
+
+  # --- CloudWatch Log Group ---
+  CognitoCustomMessageLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/cognito-custom-message-${Environment}"
+      RetentionInDays: 30
+
+  # ==========================================================
+  # USER POOL: CLIENT
+  # ==========================================================
+  ClientUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "client-pool-${Environment}"
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+          Mutable: true
+        - Name: tenant_id
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: organization
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: department
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: role1
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: employee_id
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: position
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: office_location
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: cost_center
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: contract_type
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: manager_id
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: start_date
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "10" }
+        - Name: system_code
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+      UserPoolTags:
+        Environment: !Ref Environment
+        Pool: client
+
+  ClientUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub "client-app-${Environment}"
+      UserPoolId: !Ref ClientUserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_SRP_AUTH
+
+  # ==========================================================
+  # USER POOL: VENDOR
+  # ==========================================================
+  VendorUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "vendor-pool-${Environment}"
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+          Mutable: true
+        - Name: tenant_id
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: organization
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: department
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: role1
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: employee_id
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: position
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: office_location
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: cost_center
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: contract_type
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: manager_id
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: start_date
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "10" }
+        - Name: system_code
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+      UserPoolTags:
+        Environment: !Ref Environment
+        Pool: vendor
+
+  VendorUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub "vendor-app-${Environment}"
+      UserPoolId: !Ref VendorUserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_SRP_AUTH
+
+  # ==========================================================
+  # USER POOL: OPERATOR
+  # ==========================================================
+  OperatorUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub "operator-pool-${Environment}"
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireUppercase: true
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+          Mutable: true
+        - Name: tenant_id
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: organization
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: department
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: role1
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: employee_id
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: position
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: office_location
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: cost_center
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: contract_type
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: manager_id
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+        - Name: start_date
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "10" }
+        - Name: system_code
+          AttributeDataType: String
+          Mutable: false
+          StringAttributeConstraints: { MinLength: "0", MaxLength: "256" }
+      UserPoolTags:
+        Environment: !Ref Environment
+        Pool: operator
+
+  OperatorUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub "operator-app-${Environment}"
+      UserPoolId: !Ref OperatorUserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_SRP_AUTH
+
+# ----------------------------------------------------------
+# Outputs
+# ----------------------------------------------------------
+Outputs:
+  LambdaFunctionArn:
+    Description: ARN of the Custom Message Lambda
+    Value: !GetAtt CognitoCustomMessageFunction.Arn
+
+  ClientUserPoolId:
+    Description: Cognito User Pool ID - Client
+    Value: !Ref ClientUserPool
+
+  ClientUserPoolClientId:
+    Description: Cognito App Client ID - Client
+    Value: !Ref ClientUserPoolClient
+
+  VendorUserPoolId:
+    Description: Cognito User Pool ID - Vendor
+    Value: !Ref VendorUserPool
+
+  VendorUserPoolClientId:
+    Description: Cognito App Client ID - Vendor
+    Value: !Ref VendorUserPoolClient
+
+  OperatorUserPoolId:
+    Description: Cognito User Pool ID - Operator
+    Value: !Ref OperatorUserPool
+
+  OperatorUserPoolClientId:
+    Description: Cognito App Client ID - Operator
+    Value: !Ref OperatorUserPoolClient

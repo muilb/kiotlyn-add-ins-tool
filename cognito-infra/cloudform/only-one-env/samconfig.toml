@@ -1,0 +1,24 @@
+# SAM CLI configuration
+# Deploy:  sam deploy --profile <profile>
+# Trigger: .\attach_lambda_triggers.ps1 -Profile <profile>
+
+version = 0.1
+
+[default.deploy.parameters]
+stack_name          = "cognito-infra"
+region              = "us-west-2"
+capabilities        = "CAPABILITY_NAMED_IAM"
+confirm_changeset   = true
+resolve_s3          = true
+template_file       = "template.yaml"
+parameter_overrides = [
+  "ClientAppName=\"IHP Client\"",
+  "ClientResetPasswordPath=https://ihp.brycen.com.vn/reset-password",
+  "ClientLoginPath=https://ihp.brycen.com.vn/login",
+  "VendorAppName=\"IHP Vendor\"",
+  "VendorResetPasswordPath=https://ihp.brycen.com.vn/reset-password",
+  "VendorLoginPath=https://ihp.brycen.com.vn/login",
+  "OperatorAppName=\"IHP Operator\"",
+  "OperatorResetPasswordPath=https://ihp.brycen.com.vn/reset-password",
+  "OperatorLoginPath=https://ihp.brycen.com.vn/login"
+]

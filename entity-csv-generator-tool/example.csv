@@ -1,0 +1,10 @@
+Mã văn bản;ACV_TXT_CODE;VARCHAR(50);Yes
+Tên văn bản;ACV_TXT_NAME;VARCHAR(255);Yes
+Ngày tạo;CREATED_DATE;TIMESTAMP;Yes
+Số trang;PAGE_COUNT;INT;
+Số tiền;AMOUNT;DECIMAL(18,2);Yes
+Trạng thái kích hoạt;IS_ACTIVE;BOOLEAN;
+Mô tả chi tiết;DESCRIPTION;TEXT;
+Người tạo ID;CREATED_BY_ID;BIGINT;Yes(PK)
+Ngày cập nhật;UPDATED_AT;DATETIME;
+Tỷ lệ phần trăm;PERCENTAGE;DECIMAL(5,2);

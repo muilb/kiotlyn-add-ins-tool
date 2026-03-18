@@ -1,0 +1,34 @@
+Chạy từng lệnh 1 dòng:
+
+aws cloudformation delete-stack --stack-name cognito-infra-dev --profile lb_mui --region us-west-2
+aws cloudformation wait stack-delete-complete --stack-name cognito-infra-dev --profile lb_mui --region us-west-2
+
+sam deploy --config-env dev-lambda --profile lb_mui
+sam deploy --config-env dev-pools --profile lb_mui
+.\attach_lambda_triggers.ps1 -Env dev -Profile lb_mui
+
+## aws cloudformation delete-stack --stack-name cognito-custom-message-dev --profile lb_mui --region us-west-2
+## aws cloudformation wait stack-delete-complete --stack-name cognito-custom-message-dev --profile lb_mui --region us-west-2
+
+aws cloudformation delete-stack --stack-name cognito-pools-dev --profile lb_mui --region us-west-2
+aws cloudformation wait stack-delete-complete --stack-name cognito-pools-dev --profile lb_mui --region us-west-2
+
+aws cloudformation delete-stack --stack-name cognito-lambda-dev --profile lb_mui --region us-west-2
+aws cloudformation wait stack-delete-complete --stack-name cognito-lambda-dev --profile lb_mui --region us-west-2
+
+
+===================
+
+sam deploy --config-env dev --profile lb_mui
+.\attach_lambda_triggers.ps1 -Env dev -Profile lb_mui
+
+aws cloudformation delete-stack --stack-name cognito-infra-dev --profile lb_mui --region us-west-2
+
+
+cd cloudform/only-one-env
+sam deploy --profile lb_mui
+.\attach_lambda_triggers.ps1 -Profile lb_mui
+
+aws cloudformation delete-stack --stack-name cognito-infra --profile lb_mui --region us-west-2
+
+
